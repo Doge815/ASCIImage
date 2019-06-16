@@ -11,11 +11,21 @@ namespace ASCIImage
         static void Main(string[] args)
         {
             if (args.Length == 0) return;
-            using (StreamWriter s = new StreamWriter(args[0]+".txt",false))
+            try
             {
-                s.Write(new ImageConverter(args[0]).GetImage());
-                s.Close();
+                using (StreamWriter s = new StreamWriter(args[0] + ".txt", false))
+                {
+                    s.Write(new ImageConverter(args[0]).GetImage());
+                    s.Close();
+                }
             }
+            catch
+            {
+                try { File.Delete(args[0] + ".txt"); } catch { }
+                Console.WriteLine("something happend!");
+            }
+            Console.WriteLine("press any key to exit");
+            Console.ReadKey();
         }
     }
 
@@ -36,11 +46,11 @@ namespace ASCIImage
             {
                 for (int y = 0; y < i.Height; y++)
                 {
-                    val[(int)Math.Floor((float)x / char_x / parts), (int)Math.Floor((float)y / char_y / parts)] += (decimal)i.GetPixel(x, y).GetBrightness()/parts/parts/char_x/char_y; 
+                    val[(int)Math.Floor((float)x / char_x / parts), (int)Math.Floor((float)y / char_y / parts)] += (decimal)i.GetPixel(x, y).GetBrightness() / parts / parts / char_x / char_y;
                 }
-                Console.Write($"\rprogress: {Math.Ceiling(100f*x/i.Width)}%");
+                Console.Write($"\rprogress: {Math.Ceiling(100f * x / i.Width)}%");
             }
-            Console.WriteLine("\nWait a sec...");
+            Console.WriteLine();
             string output = string.Empty;
             for (int y = 0; y < (int)Math.Ceiling((float)i.Height / char_y / parts); y++)
             {
@@ -49,8 +59,9 @@ namespace ASCIImage
                     output += bright[(int)((float)val[x, y] * bright.Length)];
                 }
                 output += "\n";
+                Console.Write($"\rprogress: {Math.Ceiling(100f * y / (int)Math.Ceiling((float)i.Height / char_y / parts))}%");
             }
-            Console.WriteLine("DONE!");
+            Console.WriteLine("\nDONE!");
             return output;
         }
     }
