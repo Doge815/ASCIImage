@@ -12,7 +12,6 @@ namespace ASCIImage
     {
         static void Main(string[] args)
         {
-            AutoComplete.GetPath();
             string file = "";
             try
             {
@@ -20,15 +19,17 @@ namespace ASCIImage
             }
             catch
             {
-                Console.Write($"Insert a file path: ");
-                file = Console.ReadLine();
+                Console.WriteLine($"Insert a file path:");
+                file = AutoComplete.GetPath();
             }
                 
             while (!File.Exists(file))
             {
-                Console.Write($"'{file}' doesn't exists. Insert a file path: ");
-                file = Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine($"'{file}' doesn't exists. Insert a file path:");
+                file = AutoComplete.GetPath();
             }
+            Console.WriteLine();
             try
             {
                 using (StreamWriter s = new StreamWriter(file + ".txt", false))
