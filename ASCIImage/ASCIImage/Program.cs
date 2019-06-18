@@ -30,19 +30,21 @@ namespace ASCIImage
                 file = AutoComplete.GetPath();
             }
             Console.WriteLine();
-            try
-            {
+            //try
+            //{
                 using (StreamWriter s = new StreamWriter(file + ".txt", false))
                 {
                     s.Write(ImageConverter.GetImage(file, 1));
                     s.Close();
                 }
-            }
+            //}
+#if false
             catch
             {
                 try { File.Delete(file + ".txt"); } catch { }
                 Console.WriteLine("something happened!");
             }
+#endif
             Console.WriteLine("press any key to exit");
             Console.ReadKey();
         }
