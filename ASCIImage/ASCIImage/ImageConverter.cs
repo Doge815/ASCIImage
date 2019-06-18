@@ -46,7 +46,7 @@ namespace ASCIImage
             {
                 for (int x = 0; x < (int)Math.Ceiling((float)image.Width / char_x / parts); x++)
                 {
-                    var value = brightness.Keys.OrderBy(v => Math.Abs((long)v - values[x, y])).First();
+                    var value = brightness.Keys.OrderBy(v => Math.Abs((double)v - values[x, y])).First();
                     sb.Append(brightness[value]);
                 }
                 sb.Append(Environment.NewLine);
