@@ -12,48 +12,47 @@ namespace BrightnessHelper
     {
         static void Main(string[] args)
         {
-            var chars = Enumerable.Range(char.MinValue, char.MaxValue - char.MinValue).Select(x => Convert.ToChar(x)).Where(x => !char.IsControl(x)).ToList();
-            chars = Enumerable.Range('\x1', 127).Select(x => Convert.ToChar(x)).Where(x => !char.IsControl(x)).ToList();
-            Dictionary<char, float>       b = new Dictionary<char, float>();
-            Bitmap                       bb = new Bitmap(100, 200);
-            Graphics                      g = Graphics.FromImage(bb);
-            Font                          f = new Font(new FontFamily("DejaVu Sans Mono"), 12);
-            SolidBrush                    s = new SolidBrush(Color.Black);
-            PointF                        p = new PointF(1, 1);
+            var chars = Enumerable.Range('\x1', 127).Select(x => Convert.ToChar(x)).Where(x => !char.IsControl(x)).ToList();
+            Dictionary<char, decimal>   brighness   = new Dictionary<char, decimal>();
+            Bitmap                      image       = new Bitmap(100, 200);
+            Graphics                    graphic     = Graphics.FromImage(image);
+            Font                        font        = new Font(new FontFamily("DejaVu Sans Mono"), 12);
+            SolidBrush                  brush       = new SolidBrush(Color.Black);
+            PointF                      point       = new PointF(1, 1);
             
             foreach(char c in chars)
             {
-                g.Clear(Color.White);
-                g.DrawString(c.ToString(), f, s, p);
-                SizeF ss = g.MeasureString(c.ToString(), f);
-                int w = (int)ss.Width;
-                int h = (int)ss.Height;
-                float bbb = 0;
-                for(int x = (int)p.X; x < w+(int)p.X; x++)
-                for(int y = (int)p.Y; y < h+(int)p.Y; y++)
-                    bbb += bb.GetPixel(x, y).GetBrightness();
-                bbb = bbb / w / h;
-                b.Add(c, bbb);
+                graphic.Clear(Color.White);
+                graphic.DrawString(c.ToString(), font, brush, point);
+                SizeF ss = graphic.MeasureString(c.ToString(), font);
+                int width = (int)ss.Width;
+                int height = (int)ss.Height;
+                decimal charBrightness = 0;
+                for(int x = (int)point.X; x < width+(int)point.X; x++)
+                for(int y = (int)point.Y; y < height+(int)point.Y; y++)
+                    charBrightness += (decimal)image.GetPixel(x, y).GetBrightness();
+                charBrightness = charBrightness / width / height;
+                brighness.Add(c, charBrightness);
             }
-            float m = b.Keys.Max();
-            List<float> bbbbb = b.Values.ToList();
-            for(int i = 0; i < bbbbb.Count; i++)
+            var a = brighness.Values.AsEnumerable().Max();
+            for(int i = 0; i < brighness.Values.ToArray().Count(); i++)
             {
-                bbbbb[i] = bbbbb[i] / 5;
+                brighness.Values.ToArray()[i] = brighness.Values.ToArray()[i];
             }
-            Dictionary<float, char> bbbb = new Dictionary<float, char>();
-            for(float i = 0; i <= 2; i+= 0.05f)
+
+            Dictionary<decimal, char> bestChars = new Dictionary<decimal, char>();
+            for(decimal i = 0; i <= 1; i+= 0.05m)
             {
-                var u = b.MinBy(x => Math.Abs(i - x.Value)).Item1;
-                bbbb.Add(i, u.Key);
-                b.Remove(u.Key);
+                var u = brighness.MinBy(x => Math.Abs(i - x.Value)).Item1;
+                bestChars.Add(i, u.Key);
+                brighness.Remove(u.Key);
             }
 
             using (StreamWriter sss = new StreamWriter("brightness.txt", false, Encoding.Unicode))
             {
-                foreach(float ff in bbbb.Keys)
+                foreach(decimal ff in bestChars.Keys)
                 {
-                    sss.WriteLine($"{ff}|{bbbb[ff]}");
+                    sss.WriteLine($"{ff}|{bestChars[ff]}");
                 }
                 sss.Close();
             }
