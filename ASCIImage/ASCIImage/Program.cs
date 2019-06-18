@@ -34,7 +34,7 @@ namespace ASCIImage
             //{
                 using (StreamWriter s = new StreamWriter(file + ".txt", false))
                 {
-                    s.Write(ImageConverter.GetImage(file, 1));
+                    s.Write(ImageConverter.GetImage(file, 5));
                     s.Close();
                 }
             //}
