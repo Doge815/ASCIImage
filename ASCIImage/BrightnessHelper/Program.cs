@@ -35,6 +35,12 @@ namespace BrightnessHelper
                 bbb = bbb / w / h;
                 b.Add(c, bbb);
             }
+            float m = b.Keys.Max();
+            List<float> bbbbb = b.Values.ToList();
+            for(int i = 0; i < bbbbb.Count; i++)
+            {
+                bbbbb[i] = bbbbb[i] / 5;
+            }
             Dictionary<float, char> bbbb = new Dictionary<float, char>();
             for(float i = 0; i <= 2; i+= 0.05f)
             {
