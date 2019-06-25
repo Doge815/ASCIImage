@@ -13,7 +13,7 @@ namespace BrightnessHelper
         static void Main(string[] args)
         {
             var chars = Enumerable.Range('\x1', 127).Select(x => Convert.ToChar(x)).Where(x => !char.IsControl(x)).ToList();
-            Dictionary<char, decimal>   brighness   = new Dictionary<char, decimal>();
+            Dictionary<char, decimal>   brightness   = new Dictionary<char, decimal>();
             Bitmap                      image       = new Bitmap(100, 200);
             Graphics                    graphic     = Graphics.FromImage(image);
             Font                        font        = new Font(new FontFamily("DejaVu Sans Mono"), 12);
@@ -29,32 +29,32 @@ namespace BrightnessHelper
                 int height = (int)ss.Height;
                 decimal charBrightness = 0;
                 for(int x = (int)point.X; x < width+(int)point.X; x++)
-                for(int y = (int)point.Y; y < height+(int)point.Y; y++)
-                    charBrightness += (decimal)image.GetPixel(x, y).GetBrightness();
+                    for(int y = (int)point.Y; y < height+(int)point.Y; y++)
+                        charBrightness += (decimal)image.GetPixel(x, y).GetBrightness();
                 charBrightness = charBrightness / width / height;
-                brighness.Add(c, charBrightness);
+                brightness.Add(c, charBrightness);
             }
-            var a = brighness.Values.AsEnumerable().Max();
-            for(int i = 0; i < brighness.Values.ToArray().Count(); i++)
-            {
-                brighness.Values.ToArray()[i] = brighness.Values.ToArray()[i];
-            }
+
+            var maxBright = brightness.Values.AsEnumerable().Max();
+            Dictionary<char, decimal> relativeBrightness = new Dictionary<char, decimal>();
+            foreach (char c in brightness.Keys)
+                relativeBrightness.Add(c, brightness[c] / maxBright);
 
             Dictionary<decimal, char> bestChars = new Dictionary<decimal, char>();
             for(decimal i = 0; i <= 1; i+= 0.05m)
             {
-                var u = brighness.MinBy(x => Math.Abs(i - x.Value)).Item1;
+                var u = relativeBrightness.MinBy(x => Math.Abs(i - x.Value)).Item1;
                 bestChars.Add(i, u.Key);
-                brighness.Remove(u.Key);
+                relativeBrightness.Remove(u.Key);
             }
 
-            using (StreamWriter sss = new StreamWriter("brightness.txt", false, Encoding.Unicode))
+            using (StreamWriter writer = new StreamWriter("brightness.txt", false, Encoding.Unicode))
             {
-                foreach(decimal ff in bestChars.Keys)
+                foreach(decimal bright in bestChars.Keys)
                 {
-                    sss.WriteLine($"{ff}|{bestChars[ff]}");
+                    writer.WriteLine($"{bright}|{bestChars[bright]}");
                 }
-                sss.Close();
+                writer.Close();
             }
         }
 

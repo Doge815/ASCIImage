@@ -4,6 +4,17 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace ASCIImage
 {
@@ -11,26 +22,23 @@ namespace ASCIImage
     {
         private const int char_x = 1;
         private const int char_y = 2;
-        //private const string brightness = "@##$||===;;::''''...  ";
         private static Dictionary<float, char> brightness;
 
-        public static string GetImage(string file, int parts = 5)
+        public static string GetImage(string file, int parts, Action<double>SetValue)
         {
-            if(brightness == null)
+            if (brightness == null)
             {
                 brightness = new Dictionary<float, char>();
-                using (StreamReader s = new StreamReader("brightness.txt"))
+                string inp = Properties.Resources.brightness;
+                string[] pairs = inp.Split(new string[]{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach(string pair in pairs)
                 {
-                    while(!s.EndOfStream)
-                    {
-                        string input = s.ReadLine();
-                        string[] val = input.Split('|');
-                        brightness.Add(float.Parse(val[0]), Convert.ToChar(val[1]));
-                    }
+                    string[] val = pair.Split('|');
+                    brightness.Add(float.Parse(val[0]), Convert.ToChar(val[1]));
                 }
             }
-
-            Bitmap image = new Bitmap(Image.FromFile(file));
+            SetValue(0);
+            Bitmap image = new Bitmap(System.Drawing.Image.FromFile(file));
             double[,] values = new double[(int)Math.Ceiling((float)image.Width / char_x / parts), (int)Math.Ceiling((float)image.Height / char_y / parts)];
             for (int x = 0; x < image.Width; x++)
             {
@@ -38,37 +46,22 @@ namespace ASCIImage
                 {
                     values[(int)Math.Floor((float)x / char_x / parts), (int)Math.Floor((float)y / char_y / parts)] += (double)image.GetPixel(x, y).GetBrightness() / parts / parts / char_x / char_y;
                 }
-                Console.Write($"\rprogress: {Math.Ceiling(100f * x / image.Width)}%");
+                SetValue(Math.Ceiling(100d * x / image.Width));
             }
-            Console.WriteLine();
             StringBuilder sb = new StringBuilder();
             for (int y = 0; y < (int)Math.Ceiling((float)image.Height / char_y / parts); y++)
             {
                 for (int x = 0; x < (int)Math.Ceiling((float)image.Width / char_x / parts); x++)
                 {
-                    var value = brightness.Keys.OrderBy(v => Math.Abs((double)v - values[x, y])).First();
-                    sb.Append(brightness[value]);
+                    var b = (float)(Math.Round(values[x, y] * (brightness.Count-1)) / (brightness.Count-1));
+                    var value = brightness[b];
+                    sb.Append(value);
                 }
                 sb.Append(Environment.NewLine);
-                Console.Write($"\rprogress: {Math.Ceiling(100f * y / (int)Math.Ceiling((float)image.Height / char_y / parts))}%");
+                SetValue(Math.Ceiling(100d * y * char_y * parts / image.Height));
             }
-            Console.WriteLine("\nDONE!");
+            SetValue(100);
             return sb.ToString();
-        }
-        public static (T1, T2) MinBy<T1, T2>(this IEnumerable<T1> source, Func<T1, T2> selector)
-            where T2 : IComparable<T2>
-        {
-            var enumerator = source.GetEnumerator();
-            if (!enumerator.MoveNext()) throw new ArgumentOutOfRangeException(nameof(source) + " is empty");
-            (T1, T2) min = (enumerator.Current, selector(enumerator.Current));
-
-            while (enumerator.MoveNext())
-            {
-                (T1, T2) current = (enumerator.Current, selector(enumerator.Current));
-                if (min.Item2.CompareTo(current.Item2) > 0) min = current;
-            }
-
-            return min;
         }
     }
 }

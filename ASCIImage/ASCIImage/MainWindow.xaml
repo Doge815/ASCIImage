@@ -1,0 +1,61 @@
+﻿<Window x:Name="Holder" x:Class="ASCIImage.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ASCIImage"
+        mc:Ignorable="d"
+        Title="ASCIImage" Height="239" Width="818" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+                            BorderThickness="1"
+                            Padding="4,2" 
+                            BorderBrush="DarkGray" 
+                            CornerRadius="3" 
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="MainGrid" Margin="0,0,0,-1">
+        <Grid HorizontalAlignment="Left" Margin="0,0,0,-51" VerticalAlignment="Top" Width="270" Height="203">
+            <Button x:Name="BtOpen" Content="Select an image" HorizontalAlignment="Left" Margin="37,23,0,0" VerticalAlignment="Top" Width="223" Padding="1" ScrollViewer.CanContentScroll="True" Click="BtOpen_Click"/>
+            <Slider x:Name="SlReso" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,-2.389" Width="250" Height="20" Value="5"/>
+            <Button Style="{StaticResource MyButtonStyle}" Background="Green" x:Name="BtText" Content="To text" HorizontalAlignment="Left" Margin="54,172,0,0" VerticalAlignment="Top" Width="98" Padding="1" ScrollViewer.CanContentScroll="True" Click="BtsType_Click" RenderTransformOrigin="0.908,-3.55"/>
+            <Button Style="{StaticResource MyButtonStyle}" Background="Red" x:Name="BtImage" Content="To image" HorizontalAlignment="Left" Margin="162,172,0,0" VerticalAlignment="Top" Width="98" Padding="1" ScrollViewer.CanContentScroll="True" Click="BtsType_Click"/>
+            <Label Content="I." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346" FontSize="24"/>
+            <Label Content="II." HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346" FontSize="24"/>
+            <Label Content="Select a resolution" HorizontalAlignment="Left" Margin="37,70,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346"/>
+            <Label Content="low" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top"/>
+            <Label Content="high" HorizontalAlignment="Left" Margin="222,117,0,0" VerticalAlignment="Top"/>
+            <Label Content="III." HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346" FontSize="24"/>
+        </Grid>
+        <Grid HorizontalAlignment="Center"  Margin="270,0,270,-51" VerticalAlignment="Top" Width="270" Height="203">
+            <Border BorderThickness="3" BorderBrush="Black" Margin="10,10,10,0" Height="183" VerticalAlignment="Top">
+                <Image x:Name="ImPrew" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Stretch="Uniform"/>
+            </Border>
+        </Grid>
+        <Grid HorizontalAlignment="Right" Margin="0,0,0,-51" VerticalAlignment="Top" Width="270" Height="203">
+            <ProgressBar x:Name="PbProgress" HorizontalAlignment="Left" Height="20" Margin="10,112,0,0" VerticalAlignment="Top" Width="250"/>
+            <Button x:Name ="BtExport" Content="Export file" HorizontalAlignment="Left" Margin="45,166,0,0" VerticalAlignment="Top" Width="215" Click="BtExport_Click"/>
+            <Button x:Name ="BtRender" Content="Render" HorizontalAlignment="Right" Margin="37,23,10,0" VerticalAlignment="Top" Width="209" Click="BtRender_Click"/>
+            <Label Content="IV." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346" FontSize="24"/>
+            <Label Content="V." HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346" FontSize="24"/>
+            <Label Content="progress" HorizontalAlignment="Center" Margin="106,81,106,0" VerticalAlignment="Top" RenderTransformOrigin="0.553,1.462" Width="58"/>
+        </Grid>
+    </Grid>
+</Window>
