@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using Microsoft.Win32;
 using System.Windows.Threading;
+using System.Drawing;
 
 namespace ASCIImage
 {
@@ -14,6 +15,7 @@ namespace ASCIImage
         public BitmapImage Image { get; private set; }
         public string File { get; private set; } = "";
         public object Output { get; private set; }
+        private bool ToText { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -34,8 +36,9 @@ namespace ASCIImage
 
         private void BtsType_Click(object sender, RoutedEventArgs e)
         {
-            ((Button)sender).Background = Brushes.Green;
-            (sender == BtImage ? BtText : BtImage).Background = Brushes.Red;
+            ((Button)sender).Background = System.Windows.Media.Brushes.Green;
+            (sender == BtImage ? BtText : BtImage).Background = System.Windows.Media.Brushes.Red;
+            ToText = (sender == BtText);
         }
 
         private void BtExport_Click(object sender, RoutedEventArgs e)
@@ -45,13 +48,20 @@ namespace ASCIImage
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(File);
             if (Output is string) { saveFileDialog.Filter = "txt files|*.txt"; saveFileDialog.FileName = File + ".txt"; }
-            else saveFileDialog.Filter = "JPG files|*.jpg";
+            else {saveFileDialog.Filter = "JPG files|*.jpg"; saveFileDialog.FileName = File + ".jpg"; }
             if(saveFileDialog.ShowDialog().Value)
             {
-                using (StreamWriter s = new StreamWriter(saveFileDialog.FileName, false))
+                if (Output is string)
                 {
-                    s.Write(Output.ToString());
-                    s.Close();
+                    using (StreamWriter s = new StreamWriter(saveFileDialog.FileName, false))
+                    {
+                        s.Write(Output.ToString());
+                        s.Close();
+                    }
+                }
+                else
+                {
+                    ((Bitmap)Output).Save(saveFileDialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
                 }
             }
         }
@@ -66,7 +76,8 @@ namespace ASCIImage
             MainGrid.IsEnabled = false;
             try
             {
-                Output = ImageConverter.GetImage(File, (int)(11 - SlReso.Value), x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate() { }, DispatcherPriority.Render); });
+                Output = ImageConverter.GetStringyImage(File, (int)(11 - SlReso.Value), x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
+                if(!ToText) Output = ImageConverter.GetImagyImage((string)Output, 12, x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
                 MessageBox.Show("Image rendered!", "Success", MessageBoxButton.OK);
             }
             catch(Exception ex)

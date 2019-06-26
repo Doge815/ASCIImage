@@ -24,7 +24,7 @@ namespace ASCIImage
         private const int char_y = 2;
         private static Dictionary<float, char> brightness;
 
-        public static string GetImage(string file, int parts, Action<double>SetValue)
+        public static string GetStringyImage(string file, int parts, Action<double>SetValue)
         {
             if (brightness == null)
             {
@@ -62,6 +62,36 @@ namespace ASCIImage
             }
             SetValue(100);
             return sb.ToString();
+        }
+
+        public static System.Drawing.Image GetImagyImage(string text, int size, Action<double>SetValue)
+        { 
+            SetValue(100);
+            string[] lines = text.Split('\n');
+            Font font = new Font("DejaVu Sans Mono", size);
+            SizeF lineSize;
+            SolidBrush brush = new SolidBrush(System.Drawing.Color.Black);
+            PointF point = new PointF();
+
+            using (Bitmap b = new Bitmap(1,1))
+            {
+                using (Graphics g = Graphics.FromImage(b))
+                {
+                    lineSize = g.MeasureString(lines[0], font);
+                }
+            }
+
+            Bitmap image = new Bitmap((int)Math.Ceiling(lineSize.Width), (int)Math.Ceiling(lineSize.Height * lines.Length));
+            Graphics graphic = Graphics.FromImage(image);
+            graphic.Clear(System.Drawing.Color.White);
+            for(int i = 0; i< lines.Length; i++)
+            {
+                graphic.DrawString(lines[i], font, brush, point);
+                point.Y += lineSize.Height;
+                SetValue(100d * i / lines.Length);
+            }
+            SetValue(100);
+            return image;
         }
     }
 }
