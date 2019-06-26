@@ -30,7 +30,7 @@ namespace ASCIImage
             {
                 brightness = new Dictionary<float, char>();
                 string inp = Properties.Resources.brightness;
-                string[] pairs = inp.Split(new string[]{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] pairs = inp.Split(new []{ "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach(string pair in pairs)
                 {
                     string[] val = pair.Split('|');
