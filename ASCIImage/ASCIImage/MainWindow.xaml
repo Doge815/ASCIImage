@@ -34,7 +34,7 @@
     <Grid x:Name="MainGrid" Margin="0,0,0,-1">
         <Grid HorizontalAlignment="Left" Margin="0,0,0,-51" VerticalAlignment="Top" Width="270" Height="203">
             <Button x:Name="BtOpen" Content="Select an image" HorizontalAlignment="Left" Margin="37,23,0,0" VerticalAlignment="Top" Width="223" Padding="1" ScrollViewer.CanContentScroll="True" Click="BtOpen_Click"/>
-            <Slider x:Name="SlReso" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,-2.389" Width="250" Height="20" Value="5"/>
+            <Slider x:Name="SlReso" HorizontalAlignment="Left" IsSnapToTickEnabled="True" TickFrequency="1" Margin="10,99,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,-2.389" Width="250" Height="20" Value="5"/>
             <Button Style="{StaticResource MyButtonStyle}" Background="Green" x:Name="BtText" Content="To text" HorizontalAlignment="Left" Margin="54,172,0,0" VerticalAlignment="Top" Width="98" Padding="1" ScrollViewer.CanContentScroll="True" Click="BtsType_Click" RenderTransformOrigin="0.908,-3.55"/>
             <Button Style="{StaticResource MyButtonStyle}" Background="Red" x:Name="BtImage" Content="To image" HorizontalAlignment="Left" Margin="162,172,0,0" VerticalAlignment="Top" Width="98" Padding="1" ScrollViewer.CanContentScroll="True" Click="BtsType_Click"/>
             <Label Content="I." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.026,0.346" FontSize="24"/>

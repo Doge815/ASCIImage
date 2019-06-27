@@ -15,7 +15,7 @@ namespace ASCIImage
         public BitmapImage Image { get; private set; }
         public string File { get; private set; } = "";
         public object Output { get; private set; }
-        private bool ToText { get; set; }
+        private bool ToText { get; set; } = true;
         public MainWindow()
         {
             InitializeComponent();
@@ -74,7 +74,7 @@ namespace ASCIImage
                 return;
             }
             MainGrid.IsEnabled = false;
-            try
+            /*try
             {
                 Output = ImageConverter.GetStringyImage(File, (int)(11 - SlReso.Value), x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
                 if(!ToText) Output = ImageConverter.GetImagyImage((string)Output, 12, x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
@@ -84,7 +84,10 @@ namespace ASCIImage
             {
                 System.Diagnostics.Debug.Print(ex.ToString());
                 MessageBox.Show("Failure while rendering!", "failure", MessageBoxButton.OK);
-            }
+            }*/
+            Output = ImageConverter.GetStringyImage(File, (int)(11 - SlReso.Value), x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
+            if (!ToText) Output = ImageConverter.GetImagyImage((string)Output, 12, x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
+            MessageBox.Show("Image rendered!", "Success", MessageBoxButton.OK);
             MainGrid.IsEnabled = true;
         }
     }
