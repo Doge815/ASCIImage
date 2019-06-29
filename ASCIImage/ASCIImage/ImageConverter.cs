@@ -39,12 +39,15 @@ namespace ASCIImage
             }
             SetValue(0);
             Bitmap image = new Bitmap(System.Drawing.Image.FromFile(file));
-            double[,] values = new double[(int)Math.Ceiling((float)image.Width / char_x / parts), (int)Math.Ceiling((float)image.Height / char_y / parts)];
+            double[,] values = new double[(int)Math.Ceiling((float)image.Width / char_x / parts),
+                (int)Math.Ceiling((float)image.Height / char_y / parts)];
             for (int x = 0; x < image.Width; x++)
             {
                 for (int y = 0; y < image.Height; y++)
                 {
-                    values[(int)Math.Floor((float)x / char_x / parts), (int)Math.Floor((float)y / char_y / parts)] += (double)image.GetPixel(x, y).GetBrightness() / parts / parts / char_x / char_y;
+                    values[(int)Math.Floor((float)x / char_x / parts),
+                        (int)Math.Floor((float)y / char_y / parts)] +=
+                        (double)image.GetPixel(x, y).GetBrightness() / parts / parts / char_x / char_y;
                 }
                 SetValue(Math.Ceiling(100d * x / image.Width));
             }
@@ -53,7 +56,8 @@ namespace ASCIImage
             {
                 for (int x = 0; x < (int)Math.Ceiling((float)image.Width / char_x / parts); x++)
                 {
-                    var b = (float)(Math.Round(values[x, y] * (brightness.Count-1)) / (brightness.Count-1));
+                    var b = (float)(Math.Round(values[x, y] * (brightness.Count-1)) /
+                        (brightness.Count-1));
                     var value = brightness[b];
                     sb.Append(value);
                 }
@@ -81,11 +85,16 @@ namespace ASCIImage
                     lineSize = g.MeasureString(lines[0], font);
                 }
             }
-            int w = (int)Math.Ceiling(lineSize.Width);
-            int h = (int)Math.Ceiling(lineSize.Height * lines.Length);
-            Bitmap image = new Bitmap(w, h,  System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
+#if false
+            Bitmap image = new Bitmap((int)Math.Ceiling(lineSize.Width),
+                (int)Math.Ceiling(lineSize.Height * lines.Length),
+                System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
+
+            System.Drawing.Imaging.BitmapData imageData = image.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
             
-            Graphics graphic = Graphics.FromImage(image);
+            IntPtr ptr = imageData.Scan0;
+            Graphics graphic = Graphics.FromHdc(ptr);
             graphic.Clear(System.Drawing.Color.White);
             for(int i = 0; i< lines.Length; i++)
             {
@@ -93,6 +102,17 @@ namespace ASCIImage
                 point.Y += lineSize.Height;
                 SetValue(100d * i / lines.Length);
             }
+            image.UnlockBits(imageData);
+            */
+#else
+            WriteableBitmap im = new WriteableBitmap((int)Math.Ceiling(lineSize.Width),
+                (int)Math.Ceiling(lineSize.Height * lines.Length),
+                96,
+                96,
+                PixelFormats.Bgr32,
+                null);
+            image.Sou
+#endif
             SetValue(100);
             return image;
         }
