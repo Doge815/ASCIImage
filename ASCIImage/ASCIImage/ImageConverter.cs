@@ -59,6 +59,7 @@ namespace ASCIImage
                 }
                 sb.Append(Environment.NewLine);
                 SetValue(Math.Ceiling(100d * y * char_y * parts / image.Height));
+                System.Diagnostics.Debug.Print((Math.Ceiling(100d * y * char_y * parts / image.Height).ToString()));
             }
             SetValue(100);
             return sb.ToString();
@@ -80,8 +81,10 @@ namespace ASCIImage
                     lineSize = g.MeasureString(lines[0], font);
                 }
             }
-
-            Bitmap image = new Bitmap((int)Math.Ceiling(lineSize.Width), (int)Math.Ceiling(lineSize.Height * lines.Length));
+            int w = (int)Math.Ceiling(lineSize.Width);
+            int h = (int)Math.Ceiling(lineSize.Height * lines.Length);
+            Bitmap image = new Bitmap(w, h,  System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
+            
             Graphics graphic = Graphics.FromImage(image);
             graphic.Clear(System.Drawing.Color.White);
             for(int i = 0; i< lines.Length; i++)
