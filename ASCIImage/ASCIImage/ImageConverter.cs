@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace ASCIImage
 {
@@ -106,11 +107,26 @@ namespace ASCIImage
             */
             return image;
 #else
-
+            return CreateBitmap(CreateWriteableBitmap(CreateBitmapSource(
+                320, 240, 96,
+                drawingContext =>
+                {
+                    drawingContext.DrawRectangle(
+                        System.Windows.Media.Brushes.Green, null, new Rect(50, 50, 200, 100));
+                    drawingContext.DrawLine(
+                        new System.Windows.Media.Pen(Brushes.White, 2), new System.Windows.Point(0, 0), new System.Windows.Point(320, 240));
+                    FormattedText formattedText = new FormattedText(
+                        "",
+                        System.Globalization.CultureInfo.GetCultureInfo("de-de"),
+                        FlowDirection.LeftToRight,
+                        new Typeface("Verdana"),
+                        32,
+                        Brushes.Black);
+                })));
 #endif
-
         }
 
+        #region helper
         //modified from https://stackoverflow.com/questions/88488/getting-a-drawingcontext-for-a-wpf-writeablebitmap
         public static BitmapSource CreateBitmapSource(int width, int height, double dpi, Action<DrawingContext> render)
         {
@@ -159,5 +175,6 @@ namespace ASCIImage
             }
             return bmp;
         }
+        #endregion
     }
 }
