@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace ASCIImage
 {
@@ -104,17 +105,60 @@ namespace ASCIImage
             }
             image.UnlockBits(imageData);
             */
-#else
-            WriteableBitmap image = new WriteableBitmap((int)Math.Ceiling(lineSize.Width),
-                (int)Math.Ceiling(lineSize.Height * lines.Length),
-                96,
-                96,
-                PixelFormats.Bgr32,
-                null);
-            im.
-#endif
-            SetValue(100);
             return image;
+#else
+#endif
         }
+
+        #region helper
+        //modified from https://stackoverflow.com/questions/88488/getting-a-drawingcontext-for-a-wpf-writeablebitmap
+        public static BitmapSource CreateBitmapSource(int width, int height, double dpi, Action<DrawingContext> render)
+        {
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+            {
+                render(drawingContext);
+            }
+            RenderTargetBitmap bitmap = new RenderTargetBitmap(
+                width, height, dpi, dpi, PixelFormats.BlackWhite);
+            bitmap.Render(drawingVisual);
+
+            return bitmap;
+        }
+
+        //from https://stackoverflow.com/questions/5867657/copying-from-bitmapsource-to-writablebitmap
+        public static WriteableBitmap CreateWriteableBitmap(BitmapSource bitmapSource)
+        {
+            int stride = bitmapSource.PixelWidth * (bitmapSource.Format.BitsPerPixel + 7) / 8;
+
+            byte[] data = new byte[stride * bitmapSource.PixelHeight];
+
+            bitmapSource.CopyPixels(data, stride, 0);
+
+            WriteableBitmap target = new WriteableBitmap(
+                bitmapSource.PixelWidth,
+                bitmapSource.PixelHeight,
+                bitmapSource.DpiX, bitmapSource.DpiY,
+                bitmapSource.Format, null);
+            target.WritePixels(
+                new Int32Rect(0, 0, bitmapSource.PixelWidth, 
+                bitmapSource.PixelHeight), data, stride, 0);
+            return target;
+        }
+
+        //from https://stackoverflow.com/questions/17298034/converting-writeablebitmap-to-bitmap-in-c-sharp
+        public static System.Drawing.Bitmap CreateBitmap(WriteableBitmap writeableBitmap)
+        {
+            System.Drawing.Bitmap bmp;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeableBitmap));
+                enc.Save(outStream);
+                bmp = new System.Drawing.Bitmap(outStream);
+            }
+            return bmp;
+        }
+        #endregion
     }
 }
