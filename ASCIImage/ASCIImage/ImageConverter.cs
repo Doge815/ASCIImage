@@ -105,13 +105,13 @@ namespace ASCIImage
             image.UnlockBits(imageData);
             */
 #else
-            WriteableBitmap im = new WriteableBitmap((int)Math.Ceiling(lineSize.Width),
+            WriteableBitmap image = new WriteableBitmap((int)Math.Ceiling(lineSize.Width),
                 (int)Math.Ceiling(lineSize.Height * lines.Length),
                 96,
                 96,
                 PixelFormats.Bgr32,
                 null);
-            image.Sou
+            im.
 #endif
             SetValue(100);
             return image;
