@@ -74,17 +74,7 @@ namespace ASCIImage
                 return;
             }
             MainGrid.IsEnabled = false;
-            /*try
-            {
-                Output = ImageConverter.GetStringyImage(File, (int)(11 - SlReso.Value), x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
-                if(!ToText) Output = ImageConverter.GetImagyImage((string)Output, 12, x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
-                MessageBox.Show("Image rendered!", "Success", MessageBoxButton.OK);
-            }
-            catch(Exception ex)
-            {
-                System.Diagnostics.Debug.Print(ex.ToString());
-                MessageBox.Show("Failure while rendering!", "failure", MessageBoxButton.OK);
-            }*/
+
             Output = ImageConverter.GetStringyImage(File, (int)(11 - SlReso.Value), x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
             if (!ToText) Output = ImageConverter.GetImagyImage((string)Output, 12, x => { PbProgress.Value = x; PbProgress.Dispatcher.Invoke(delegate () { }, DispatcherPriority.Render); });
             MessageBox.Show("Image rendered!", "Success", MessageBoxButton.OK);
